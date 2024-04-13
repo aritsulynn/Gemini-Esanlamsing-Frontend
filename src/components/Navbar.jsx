@@ -3,6 +3,7 @@ import { UserContext } from "../UserContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export default function Navbar(props) {
   const navigate = useNavigate();
@@ -12,29 +13,19 @@ export default function Navbar(props) {
   const [isToggle, setIsToggle] = useState(false);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      // try {
-      //   const res = await axios.get("http://localhost:3030/api/protected", {
-      //     withCredentials: true,
-      //   });
-      //   setIsLoggedIn(true);
-      //   setUserInfo(res.data);
-      // } catch (error) {
-      //   setIsLoggedIn(false);
-      // }
+    const checkLogin = async () => {
+      if (Cookies.get("isLoggedIn") === "true") {
+        setIsLoggedIn(true);
+      }
     };
-
-    fetchUserData();
-  }, []);
+    checkLogin();
+  });
 
   const handleLogout = async () => {
-    const res = await axios.post("http://localhost:3030/api/logout", {
-      //   withCredentials: true,
-    });
     setIsLoggedIn(false);
+    Cookies.remove("isLoggedIn");
     setUserInfo(null);
     navigate("/login");
-    // Cookies.remove("token");
   };
 
   const handleToggle = () => {
@@ -70,6 +61,15 @@ export default function Navbar(props) {
         <ul className="hidden md:flex space-x-4">
           <li>
             <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/validate">Validate Science Plan</Link>
+          </li>
+          <li>
+            <Link to="/install">Install New config</Link>
+          </li>
+          <li>
+            <Link to="/submit">Submit Science Plan</Link>
           </li>
           {isLoggedIn ? (
             <li>
@@ -107,11 +107,21 @@ export default function Navbar(props) {
             }`}
           >
             <li>
-              <a href="/">Home</a>
+              <Link to="/">Home</Link>
             </li>
+            <li>
+              <Link to="/validate">Validate Science Plan</Link>
+            </li>
+            <li>
+              <Link to="/install">Install New config</Link>
+            </li>
+            <li>
+              <Link to="/submit">Submit Science Plan</Link>
+            </li>
+            <li></li>
             {isLoggedIn ? (
               <li>
-                <button onClick={handleLogout}>ออกจากระบบ</button>
+                <Link onClick={handleLogout}>Logout</Link>
               </li>
             ) : (
               <>

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+// import js-cookie
+import Cookies from "js-cookie";
+
+
 export default function SubmitSciencePlan() {
   const [data, setData] = useState([]);
   const [id, setId] = useState(null);

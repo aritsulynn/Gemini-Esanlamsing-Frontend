@@ -2,11 +2,15 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export default function App() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    // if (Cookies.get("isLoggedIn") !== "true") {
+    //   navigate("/login");
+    // }
     const fetchData = async () => {
       const res = await axios
         .get("http://localhost:3030/scienceplans")

@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "../UserContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import Cookies from "js-cookie";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,25 +13,20 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
-    //     try {
-    //       const response = await axios.post(
-    //         "http://localhost:3030/api/login",
-    //         {
-    //           email,
-    //           password,
-    //         },
-    //         { withCredentials: true }
-    //       );
-
-    //       if (response.status === 200) {
-    //         setIsLoggedIn(true);
-    //         navigate("/");
-    //       }
-    //     } catch (error) {
-    //       console.error("Login failed:", error);
-    //       setError(error.response.data.message);
-    //     }
+    const user = { email, password };
+    await axios
+      .post("http://localhost:3030/users/login", null, {
+        params: { email: email, password: password },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setIsLoggedIn(true);
+        Cookies.set("isLoggedIn", true);
+        navigate("/");
+      })
+      .catch((err) => {
+        setError(err.response.data.message);
+      });
   };
 
   return (
