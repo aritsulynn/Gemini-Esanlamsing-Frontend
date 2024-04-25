@@ -18,7 +18,7 @@ import SubmitSciencePlan from "./pages/SubmitSciencePlan.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <UserProvider>
-      <Nav className="bg-slate-700" />
+      <Nav />
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />

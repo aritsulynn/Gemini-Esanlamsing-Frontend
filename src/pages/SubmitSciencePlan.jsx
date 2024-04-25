@@ -67,7 +67,7 @@ export default function SubmitSciencePlan() {
   }, []);
 
   return (
-    <div>
+    <div className="container mx-auto">
       <h1>Select Science Plan to submit</h1>
       <form>
         <div>
