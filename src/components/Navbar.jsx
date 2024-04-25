@@ -62,20 +62,8 @@ export default function Navbar(props) {
           <li>
             <Link to="/">Home</Link>
           </li>
-          <li>
-            <Link to="/validate">Validate Science Plan</Link>
-          </li>
-          <li>
-            <Link to="/install">Install New config</Link>
-          </li>
-          <li>
-            <Link to="/submit">Submit Science Plan</Link>
-          </li>
+
           {isLoggedIn ? (
-            <li>
-              <button onClick={handleLogout}>Logout</button>
-            </li>
-          ) : (
             <>
               <li>
                 <Link to="/validate">Validate Science Plan</Link>
@@ -87,16 +75,17 @@ export default function Navbar(props) {
                 <Link to="/submit">Submit Science Plan</Link>
               </li>
               <li>
-                <Link to="/register">Register</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
+                <button onClick={handleLogout}>Logout</button>
               </li>
             </>
+          ) : (
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
           )}
         </ul>
-        {/* Mobile Screen */}
       </div>
+      {/* Mobile Screen */}
       <div>
         {isToggle && (
           <ul
@@ -109,21 +98,7 @@ export default function Navbar(props) {
             <li>
               <Link to="/">Home</Link>
             </li>
-            <li>
-              <Link to="/validate">Validate Science Plan</Link>
-            </li>
-            <li>
-              <Link to="/install">Install New config</Link>
-            </li>
-            <li>
-              <Link to="/submit">Submit Science Plan</Link>
-            </li>
-            <li></li>
             {isLoggedIn ? (
-              <li>
-                <Link onClick={handleLogout}>Logout</Link>
-              </li>
-            ) : (
               <>
                 <li>
                   <Link to="/validate">Validate Science Plan</Link>
@@ -138,9 +113,13 @@ export default function Navbar(props) {
                   <Link to="/register">Register</Link>
                 </li>
                 <li>
-                  <Link to="/login">Login</Link>
+                  <button onClick={handleLogout}>Logout</button>
                 </li>
               </>
+            ) : (
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
             )}
           </ul>
         )}

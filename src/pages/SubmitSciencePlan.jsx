@@ -4,14 +4,13 @@ import axios from "axios";
 // import js-cookie
 import Cookies from "js-cookie";
 
-
 export default function SubmitSciencePlan() {
   const [data, setData] = useState([]);
   const [id, setId] = useState(null);
   const [isTested, setIsTested] = useState(false);
   const [testData, setTestData] = useState([]);
 
-  const handleSubmit = async (e) => {
+  const handleTest = async (e) => {
     e.preventDefault();
     if (!id) {
       alert("Select a science plan to submit");
@@ -36,6 +35,25 @@ export default function SubmitSciencePlan() {
     // console.log(e.target.value);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!id) {
+      alert("Select a science plan to submit");
+      return;
+    }
+    setIsTested(true);
+    const submitSciencePlan = await axios
+      .post("http://localhost:3030/submitscienceplan", null, {
+        params: { id: id },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setTestData(response.data);
+        setIsTested(false);
+      });
+    submitSciencePlan;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const res = await axios
@@ -51,7 +69,7 @@ export default function SubmitSciencePlan() {
   return (
     <div>
       <h1>Select Science Plan to submit</h1>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div>
           <select onChange={handleChange}>
             <option value="">Select a plan</option>
@@ -62,9 +80,14 @@ export default function SubmitSciencePlan() {
             ))}
           </select>
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" onClick={handleTest}>
+          Test
+        </button>
+        <br />
         {isTested && <p>Testing...</p>}
-        {testData.length > 0 && <p>{testData}</p>}
+        <button type="submit" onClick={handleSubmit}>
+          Submit
+        </button>
       </form>
     </div>
   );
