@@ -10,9 +10,12 @@ export default function SubmitSciencePlan() {
   const [canSubmit, setCanSubmit] = useState(false);
   const [testStatus, setTestStatus] = useState('');
   const [canTest, setCanTest] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(false);
 
   useEffect(() => {
     const checkCanTest = async () => {
+      setCanSubmit(false);
+
       if (id) {
         try {
           const response = await axios.post(`http://localhost:3030/getscienceplan`, null, {
@@ -20,13 +23,13 @@ export default function SubmitSciencePlan() {
           });
           const status = response.data.status;
           setCanTest(status === "SAVED");
+          setCanSubmit(status === "TESTED");
         } catch (error) {
           console.error('Error fetching science plan status:', error);
           setCanTest(false); // Assume not testable if there's an error
         }
       }
     };
-
     checkCanTest();
   }, [id]);
 
@@ -43,16 +46,28 @@ export default function SubmitSciencePlan() {
     }   
 
     setIsTesting(true);
-    await axios.post("http://localhost:3030/testscienceplan", null, {
-      params: { id: id },
-    }).then((response) => {
-      console.log(response.data);
-      setTestData(response.data);
-      setTestStatus(response.data.status);
-      setCanSubmit(response.data.status === "TESTED");
+    try {
+      await axios.post("http://localhost:3030/testscienceplan", null, {
+        params: { id: id },
+      }).then((response) => {
+        setTestData(response.data);
+      });
+  
+      // Fetch the updated status after the test
+      await axios.post(`http://localhost:3030/getscienceplan`, null, {
+        params: { id: id }
+      }).then((response) =>  {
+        setTestStatus(response.data.status); // Assuming this is the field in response.data
+        setCanSubmit(response.data.status === "TESTED");
+      });
+
+    } catch (error) {
+      console.error('Error during testing:', error);
+    } finally {
       setIsTesting(false);
       setShowModal(true);
-    });
+    }
+
   };
 
   useEffect(() => {
@@ -69,11 +84,13 @@ export default function SubmitSciencePlan() {
 
   const handleSubmit = async () => {
 
-    const submitSciencePlan = await axios.post("http://localhost:3030/submitscienceplan", null, {
+    await axios.post("http://localhost:3030/submitscienceplan", null, {
       params: { id: id },
+    }).then((reponse) => {
+      if(reponse.status == 200) {
+        setSubmitStatus(true);
+      }
     });
-    // console.log(submitSciencePlan.data);
-    setShowModal(true); // Optional: Show modal on submission too, with a different message perhaps
   };
 
   const handleCloseModal = () => {
@@ -121,38 +138,39 @@ export default function SubmitSciencePlan() {
           </div>
         )}
         {showModal && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full px-4">
-            <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-              <div className="mt-3 text-center">
-                <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full" style={{ backgroundColor: testStatus === 'TESTED' ? 'bg-green-100' : 'bg-red-100' }}>
-                  {testStatus === 'TESTED' ? (
-                    <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
-                    </svg>
-                  ) : (
-                    <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  )}
-                </div>
-                <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  {testStatus === 'TESTED' ? "Testing Complete" : "Testing Failed"}
-                </h3>
-                <div className="mt-2 px-7 py-3">
-                  <p className="text-sm text-gray-500">
-                    {testStatus === 'TESTED' ? "The science plan testing is completed successfully. Here are the details:" : "Testing failed. Please review the errors and retry."}
-                  </p>
-                  <p className="text-sm text-gray-500 mt-2">{testData}</p>
-                </div>
-                <div className="items-center px-4 py-3">
-                  <button onClick={handleCloseModal} className="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300">
-                    Close
-                  </button>
-                </div>
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full px-4">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="mt-3 text-center">
+              {/* Conditionally render icons and backgrounds based on testStatus and submitStatus */}
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full" style={{ backgroundColor: (testStatus === 'TESTED' || submitStatus) ? 'bg-green-100' : 'bg-red-100' }}>
+                {(testStatus === 'TESTED' || submitStatus) ? (
+                  <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
+                  </svg>
+                ) : (
+                  <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                )}
+              </div>
+              <h3 className="text-lg leading-6 font-medium text-gray-900">
+                {testStatus === 'TESTED' || submitStatus ? "Operation Successful" : "Operation Failed"}
+              </h3>
+              <div className="mt-2 px-7 py-3">
+                <p className="text-sm text-gray-500">
+                  {testStatus === 'TESTED' ? "Testing completed successfully. Here are the details:" : submitStatus ? "Submission successful. Here are the details:" : "Operation failed. Please review the errors and retry."}
+                </p>
+                <p className="text-sm text-gray-500 mt-2">{testData}</p>
+              </div>
+              <div className="items-center px-4 py-3">
+                <button onClick={handleCloseModal} className="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300">
+                  Close
+                </button>
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
      
   
 
