@@ -15,7 +15,7 @@ export default function App() {
     console.log(Cookies.get("isLoggedIn"));
     const fetchData = async () => {
       const res = await axios
-        .get("http://localhost:3030/scienceplans")
+        .get("http://localhost:3030/sp")
         .then((response) => {
           console.log(response.data);
           setData(response.data);
@@ -44,7 +44,8 @@ export default function App() {
               className="bg-white p-4 rounded-md shadow-md border border-gray-200"
             >
               <h2 className="text-lg font-semibold">{item.starSystem}</h2>
-              <p className="text-sm text-gray-500">{item.status}</p>
+              <p className="text-sm text-gray-500">PlanNO: {item.planNo}</p>
+              <p className="text-sm text-gray-500">STATUS: {item.status}</p>
               <p className="text-sm text-gray-500">{item.telescopeLocation}</p>
               <p className="text-sm text-gray-500">{item.creator}</p>
             </div>

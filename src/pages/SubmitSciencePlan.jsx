@@ -12,7 +12,7 @@ export default function SubmitSciencePlan() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await axios
-        .get("http://localhost:3030/scienceplans")
+        .get("http://localhost:3030/sp")
         .then((response) => {
           // console.log(response.data);
           setData(response.data);
@@ -25,28 +25,24 @@ export default function SubmitSciencePlan() {
     if (!id) {
       return;
     }
-    const handleStatus = async () => {
-      await axios
-        .post(`http://localhost:3030/getscienceplan`, null, {
-          params: { id: id },
-        })
-        .then((response) => {
-          console.log(response.data);
-          setStatus(response.data.status);
-        });
-    };
+    // const handleStatus = async () => {
+    //   await axios
+    //     .post(`http://localhost:3030/sp/{}`, null, {
+    //       params: { id: id },
+    //     })
+    //     .then((response) => {
+    //       console.log(response.data);
+    //       setStatus(response.data.status);
+    //     });
+    // };
     handleStatus();
   }, [id]);
 
   const handleStatus = async () => {
-    await axios
-      .post(`http://localhost:3030/getscienceplan`, null, {
-        params: { id: id },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setStatus(response.data.status);
-      });
+    await axios.get(`http://localhost:3030/sp/${id}`).then((response) => {
+      console.log(response.data);
+      setStatus(response.data.status);
+    });
   };
 
   const handleTest = async (e) => {
@@ -57,7 +53,7 @@ export default function SubmitSciencePlan() {
     }
     handleStatus();
     await axios
-      .post("http://localhost:3030/testscienceplan", null, {
+      .post(`http://localhost:3030/tsp`, null, {
         params: { id: id },
       })
       .then((response) => {
@@ -78,7 +74,7 @@ export default function SubmitSciencePlan() {
       return;
     }
     await axios
-      .post("http://localhost:3030/submitscienceplan", null, {
+      .post("http://localhost:3030/ssp", null, {
         params: { id: id },
       })
       .then((reponse) => {
@@ -98,7 +94,7 @@ export default function SubmitSciencePlan() {
       return;
     }
     await axios
-      .post("http://localhost:3030/validate", null, {
+      .post("http://localhost:3030/vsp", null, {
         params: { id: id },
       })
       .then((response) => {
@@ -131,8 +127,7 @@ export default function SubmitSciencePlan() {
             <option value="">Select a plan</option>
             {data.map((item, index) => (
               <option key={index} value={item.planNo}>
-                {item.planNo} - {item.starSystem} - {item.creator} -{" "}
-                {item.status}
+                {item.planNo} - {item.starSystem} - {item.creator}
               </option>
             ))}
           </select>
