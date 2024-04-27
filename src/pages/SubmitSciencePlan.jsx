@@ -8,6 +8,7 @@ export default function SubmitSciencePlan() {
   const [showModal, setShowModal] = useState(false);
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+  const [testing, setTesting] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,16 +26,6 @@ export default function SubmitSciencePlan() {
     if (!id) {
       return;
     }
-    // const handleStatus = async () => {
-    //   await axios
-    //     .post(`http://localhost:3030/sp/{}`, null, {
-    //       params: { id: id },
-    //     })
-    //     .then((response) => {
-    //       console.log(response.data);
-    //       setStatus(response.data.status);
-    //     });
-    // };
     handleStatus();
   }, [id]);
 
@@ -52,6 +43,7 @@ export default function SubmitSciencePlan() {
       return;
     }
     handleStatus();
+    setTesting(() => true);
     await axios
       .post(`http://localhost:3030/tsp`, null, {
         params: { id: id },
@@ -65,6 +57,9 @@ export default function SubmitSciencePlan() {
       .catch((err) => {
         setModalText(() => err.response.data);
         setShowModal(true);
+      })
+      .finally(() => {
+        setTesting(() => false);
       });
   };
 
@@ -127,10 +122,13 @@ export default function SubmitSciencePlan() {
             <option value="">Select a plan</option>
             {data.map((item, index) => (
               <option key={index} value={item.planNo}>
-                {item.planNo} - {item.starSystem} - {item.creator}
+                {item.planNo} - {item.starSystem} created by {item.creator}
               </option>
             ))}
           </select>
+        </div>
+        <div className="mb-4">
+          Plan Status: {id == 0 ? "You did not select any plan" : status}
         </div>
         <div className="flex space-x-4 mb-4">
           <button
@@ -139,7 +137,8 @@ export default function SubmitSciencePlan() {
             disabled={
               status === "TESTED" ||
               status === "VALIDATED" ||
-              status === "SUBMITTED"
+              status === "SUBMITTED" ||
+              testing === true
                 ? true
                 : false
             }

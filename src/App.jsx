@@ -35,21 +35,37 @@ export default function App() {
 
   return (
     <div className="container mx-auto p-4 my-3">
-      <h1 className="text-2xl font-semibold">All Science Plans</h1>
+      <h1 className="text-2xl font-semibold text-center">All Science Plans</h1>
       {isLoggedIn ? (
-        <div className="grid grid-cols-3 gap-4 mt-4">
-          {data.map((item, index) => (
-            <div
-              key={index}
-              className="bg-white p-4 rounded-md shadow-md border border-gray-200"
-            >
-              <h2 className="text-lg font-semibold">{item.starSystem}</h2>
-              <p className="text-sm text-gray-500">PlanNO: {item.planNo}</p>
-              <p className="text-sm text-gray-500">STATUS: {item.status}</p>
-              <p className="text-sm text-gray-500">{item.telescopeLocation}</p>
-              <p className="text-sm text-gray-500">{item.creator}</p>
-            </div>
-          ))}
+        <div className="overflow-x-auto">
+          <table className="mx-auto table-auto border-collapse border border-gray-400 mt-4">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 bg-gray-100">Plan No</th>
+                <th className="px-4 py-2 bg-gray-100">Star System</th>
+                <th className="px-4 py-2 bg-gray-100">Status</th>
+                <th className="px-4 py-2 bg-gray-100">Telescope Location</th>
+                <th className="px-4 py-2 bg-gray-100">Creator</th>
+                <th className="px-4 py-2 bg-gray-200">Objectives</th>
+                <th className="px-4 py-2 bg-gray-200">Start Date - End Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((item, index) => (
+                <tr key={index}>
+                  <td className="border px-4 py-2">{item.planNo}</td>
+                  <td className="border px-4 py-2">{item.starSystem}</td>
+                  <td className="border px-4 py-2">{item.status}</td>
+                  <td className="border px-4 py-2">{item.telescopeLocation}</td>
+                  <td className="border px-4 py-2">{item.creator}</td>
+                  <td className="border px-4 py-2">{item.objectives}</td>
+                  <td className="border px-4 py-2">
+                    {item.startDate} - {item.endDate}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : (
         <div>Not Logged In</div>
