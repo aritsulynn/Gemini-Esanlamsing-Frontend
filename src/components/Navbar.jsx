@@ -72,6 +72,9 @@ export default function Navbar(props) {
                   <Link to="/install">Install New config</Link>
                 </li>
                 <li>
+                  <Link to="/validation">Validate</Link>
+                </li>
+                <li>
                   <Link to="/submit">Submit Science Plan</Link>
                 </li>
                 <li>
@@ -102,6 +105,9 @@ export default function Navbar(props) {
                 <>
                   <li>
                     <Link to="/install">Install New config</Link>
+                  </li>
+                  <li>
+                    <Link to="/validation">Validate</Link>
                   </li>
                   <li>
                     <Link to="/submit">Submit Science Plan</Link>

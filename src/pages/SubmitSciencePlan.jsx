@@ -43,6 +43,10 @@ export default function SubmitSciencePlan() {
       alert("Select a science plan to submit");
       return;
     }
+    if (Cookies.get("role") !== "Astronomer") {
+      alert("You are not authorized to test a science plan");
+      return;
+    }
     handleStatus();
     setTesting(() => true);
     await axios
@@ -69,6 +73,10 @@ export default function SubmitSciencePlan() {
       alert("Select a science plan to submit");
       return;
     }
+    if (Cookies.get("role") !== "Astronomer") {
+      alert("You are not authorized to submit a science plan");
+      return;
+    }
     await axios
       .post("http://localhost:3030/ssp", null, {
         params: { id: id },
@@ -81,29 +89,6 @@ export default function SubmitSciencePlan() {
       .catch((err) => {
         setModalText(() => err.response.data);
         setShowModal(true);
-      });
-  };
-
-  const handleValidation = async () => {
-    if (!id) {
-      alert("Select a science plan to validate");
-      return;
-    }
-    console.log(Cookies.get("role"));
-    if (Cookies.get("role") !== "Science Observer") {
-      alert("You are not authorized to validate a science plan");
-      return;
-    }
-    await axios
-      .post("http://localhost:3030/vsp", null, {
-        params: { id: id },
-      })
-      .then((response) => {
-        if (response.status == 200) {
-          setModalText(() => response.data);
-          handleStatus();
-          setShowModal(true);
-        }
       });
   };
 
@@ -141,17 +126,19 @@ export default function SubmitSciencePlan() {
             type="button"
             onClick={handleTest}
             disabled={
+              id == null ||
               status === "TESTED" ||
-              status === "VALIDATED" ||
               status === "SUBMITTED" ||
+              status === "VALIDATED" ||
               testing === true
                 ? true
                 : false
             }
             className={`${
+              id == null ||
               status === "TESTED" ||
-              status === "VALIDATED" ||
-              status === "SUBMITTED"
+              status === "SUBMITTED" ||
+              status === "VALIDATED"
                 ? "bg-slate-700"
                 : "bg-blue-500 hover:bg-blue-700"
             } flex-1  text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
@@ -162,42 +149,29 @@ export default function SubmitSciencePlan() {
             type="button"
             onClick={handleSubmit}
             disabled={
+              id == null ||
               status === "SAVED" ||
-              status === "VALIDATED" ||
-              status === "SUBMITTED"
+              status === "SUBMITTED" ||
+              status === "VALIDATED"
                 ? true
                 : false
             }
             className={`${
+              id == null ||
               status === "SAVED" ||
-              status === "VALIDATED" ||
-              status === "SUBMITTED"
+              status === "SUBMITTED" ||
+              status === "VALIDATED"
                 ? "bg-slate-700"
                 : "bg-green-500 hover:bg-green-700"
             } flex-1  text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
           >
             Submit
           </button>
-          <button
-            type="button"
-            onClick={handleValidation}
-            disabled={
-              status === "SAVED" ||
-              status === "TESTED" ||
-              status === "VALIDATED"
-                ? true
-                : false
-            }
-            className={`${
-              status === "SAVED" ||
-              status === "TESTED" ||
-              status === "VALIDATED"
-                ? "bg-slate-700"
-                : "bg-pink-700 hover:bg-pink-700"
-            } flex-1  text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
-          >
-            Validation
-          </button>
+        </div>
+        <div className="text-center space-x-2">
+          <h1 className="text-2xl font-bold text-center py-2">
+            {testing ? "Testing.." : null}
+          </h1>
         </div>
         {showModal && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full px-4">
@@ -213,9 +187,7 @@ export default function SubmitSciencePlan() {
                         : "bg-red-100",
                   }}
                 >
-                  {status === "TESTED" ||
-                  status === "SUBMITTED" ||
-                  status === "VALIDATED" ? (
+                  {status === "TESTED" || status === "SUBMITTED" ? (
                     <svg
                       className="h-6 w-6 text-green-600"
                       fill="none"
@@ -247,9 +219,7 @@ export default function SubmitSciencePlan() {
                 </div>
                 {/* Title of Modal */}
                 <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  {status === "TESTED" ||
-                  status === "SUBMITTED" ||
-                  status === "VALIDATED"
+                  {status === "TESTED" || status === "SUBMITTED"
                     ? "Success"
                     : "Error"}
                 </h3>

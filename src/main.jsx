@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import InstallNewConfig from "./pages/InstallNewConfig";
 import SubmitSciencePlan from "./pages/SubmitSciencePlan.jsx";
+import Validation from "./pages/Validation.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -23,6 +24,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/install" element={<InstallNewConfig />} />
+        <Route path="/validation" element={<Validation />} />
         <Route path="/submit" element={<SubmitSciencePlan />} />
       </Routes>
     </UserProvider>
