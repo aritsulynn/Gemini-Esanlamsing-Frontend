@@ -69,7 +69,7 @@ export default function Navbar(props) {
             {isLoggedIn ? (
               <>
                 <li>
-                  <Link to="/install">Install New config</Link>
+                  <Link to="/special">Install New config</Link>
                 </li>
                 <li>
                   <Link to="/validation">Validate</Link>
@@ -104,7 +104,7 @@ export default function Navbar(props) {
               {isLoggedIn ? (
                 <>
                   <li>
-                    <Link to="/install">Install New config</Link>
+                    <Link to="/special">Install New config</Link>
                   </li>
                   <li>
                     <Link to="/validation">Validate</Link>
