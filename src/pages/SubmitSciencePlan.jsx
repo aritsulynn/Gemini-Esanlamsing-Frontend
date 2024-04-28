@@ -37,35 +37,77 @@ export default function SubmitSciencePlan() {
     });
   };
 
+  // const handleTest = async (e) => {
+  //   e.preventDefault();
+  //   if (!id) {
+  //     alert("Select a science plan to submit");
+  //     return;
+  //   }
+  //   if (Cookies.get("role") !== "Astronomer") {
+  //     alert("You are not authorized to test a science plan");
+  //     return;
+  //   }
+  //   handleStatus();
+  //   setTesting(() => true);
+  //   await axios
+  //     .post(`http://localhost:3030/tsp`, null, {
+  //       params: { id: id },
+  //     })
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       setModalText(() => response.data);
+  //       handleStatus();
+  //       setShowModal(true);
+  //     })
+  //     .catch((err) => {
+  //       setModalText(() => err.response.data);
+  //       setShowModal(true);
+  //     })
+  //     .finally(() => {
+  //       setTesting(() => false);
+  //     });
+  // };
   const handleTest = async (e) => {
     e.preventDefault();
+  
+    // Check if the id is present before proceeding
     if (!id) {
-      alert("Select a science plan to submit");
+      alert("Select a science plan to test");
       return;
     }
-    if (Cookies.get("role") !== "Astronomer") {
-      alert("You are not authorized to test a science plan");
-      return;
+  
+    handleStatus();  // Assume this manages some UI status elements
+  
+    try {
+      // Fetch the science plan details
+      const response = await axios.get(`http://localhost:3030/sp/${id}`);
+      console.log(response.data)
+      const { userId } = response.data;
+      // console.log(typeof userId);
+      // console.log(typeof Cookies.get("userID"));
+      // Compare fetched plan number with user's id stored in cookies
+      if (Cookies.get("userID") === userId.toString()) {
+        setTesting(true);  // Set testing state to true
+  
+        // Post request to initiate testing on the plan
+        const testResponse = await axios.post(`http://localhost:3030/tsp`, null, { params: { id: id } });
+        console.log(testResponse.data);
+        setModalText(() => testResponse.data);  // Update modal text with response
+        setShowModal(true);  // Show modal with results
+      } else {
+        // If the plan number does not match, alert the user or handle appropriately
+        alert("User ID does not match the plan number.");
+      }
+    } catch (err) {
+      // Handle errors from any of the async operations
+      console.error(err);
+      setModalText(() => err.response?.data || "An error occurred");
+      setShowModal(true);
+    } finally {
+      // Finally block to reset testing status, regardless of outcome
+      setTesting(false);
+      handleStatus();
     }
-    handleStatus();
-    setTesting(() => true);
-    await axios
-      .post(`http://localhost:3030/tsp`, null, {
-        params: { id: id },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setModalText(() => response.data);
-        handleStatus();
-        setShowModal(true);
-      })
-      .catch((err) => {
-        setModalText(() => err.response.data);
-        setShowModal(true);
-      })
-      .finally(() => {
-        setTesting(() => false);
-      });
   };
 
   const handleSubmit = async () => {

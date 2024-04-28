@@ -20,7 +20,8 @@ export default function Login() {
       })
       .then((response) => {
         // console.log(response.data);
-        const { email, role } = response.data;
+        const { userID, email, role } = response.data;
+        Cookies.set("userID", userID);
         Cookies.set("email", email);
         Cookies.set("role", role);
         setIsLoggedIn(true);
@@ -30,6 +31,16 @@ export default function Login() {
       .catch((err) => {
         setError(err.response.data.message);
       });
+
+      // await axios.get("http://localhost:3030/autosp", {
+      //   params: { email: email }
+      // }).then(response => {
+      //   console.log("Science plans generated:", response.data);
+      //   navigate("/");
+      // }).catch(err => {
+      //   console.error("Error generating science plans:", err.response.data);
+      //   setError("Failed to auto-generate science plans: " + err.response.data.message);
+      // });
   };
 
   return (
