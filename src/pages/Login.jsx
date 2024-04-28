@@ -12,14 +12,17 @@ export default function Login() {
     useContext(UserContext);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     const user = { email, password };
     await axios
       .post("http://localhost:3030/users/login", null, {
         params: { email: email, password: password },
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
+        const { email, role } = response.data;
+        Cookies.set("email", email);
+        Cookies.set("role", role);
         setIsLoggedIn(true);
         Cookies.set("isLoggedIn", true);
         navigate("/");

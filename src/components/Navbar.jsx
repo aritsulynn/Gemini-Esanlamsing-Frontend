@@ -24,6 +24,8 @@ export default function Navbar(props) {
   const handleLogout = async () => {
     setIsLoggedIn(false);
     Cookies.remove("isLoggedIn");
+    Cookies.remove("email");
+    Cookies.remove("role");
     setUserInfo(null);
     navigate("/login");
   };

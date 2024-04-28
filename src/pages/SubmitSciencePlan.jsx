@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default function SubmitSciencePlan() {
   const [data, setData] = useState([]);
@@ -86,6 +87,11 @@ export default function SubmitSciencePlan() {
   const handleValidation = async () => {
     if (!id) {
       alert("Select a science plan to validate");
+      return;
+    }
+    console.log(Cookies.get("role"));
+    if (Cookies.get("role") !== "Science Observer") {
+      alert("You are not authorized to validate a science plan");
       return;
     }
     await axios
