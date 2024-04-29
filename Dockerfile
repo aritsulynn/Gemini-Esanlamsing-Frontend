@@ -1,6 +1,6 @@
 # run the following command to build the image
-# docker build -t geminife .
-# docker run -p 8080:8080 geminife
+# docker build -t gemini .
+# docker run -p 8080:8080 gemini
 
 FROM node:18-alpine
 
